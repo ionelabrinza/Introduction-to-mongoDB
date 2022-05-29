@@ -5,11 +5,21 @@ const authenticate = require('../authenticate');
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+
+//endpoint for users path - task 3 
+
+router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+   User.find()
+   .then(user => {
+     res.statusCode = 200;
+     res.setHeader('Content-Type' ,'application/json');
+     res.json(user);
+   })
+   .catch(err => next(err));
 });
 
 
+//endpoint for signup path
 router.post('/signup', (req, res) => {
     User.register(
       new User({username: req.body.username}),
