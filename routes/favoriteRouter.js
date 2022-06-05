@@ -6,9 +6,10 @@ const user = require('../models/user');
 
 const favoriteRouter = express.Router();
 
+//Endpoints for '/favorites'
 favoriteRouter.route('/')
 .options(cors.corsWithOptions, (req, res)=> res.sendStatus(200))
-.get(cors.cors, (req, res, next) => {
+.get(cors.cors, authenticate.verifyUser,  (req, res, next) => {
     Favorite.find({ user: req.user._id })
     .populate('user')
     .populate('campsites')
@@ -73,11 +74,11 @@ favoriteRouter.route('/')
     .catch(err => next(err));
 });
 
-/////////////////////////////////
+//Endpoints for '/favorites/:campsiteId'
 
 favoriteRouter.route('/:campsiteId')
 .options(cors.corsWithOptions, (req, res)=> res.sendStatus(200))
-.get(cors.cors, (req, res, next) => {
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
         res.statusCode = 403;
         res.end(`GET operation not supported on /favorites/${req.params.campsiteId}`);
 })
